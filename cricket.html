@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f6f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            width: 340px;
+            margin: 60px auto 0 auto;
+            padding: 32px 24px 24px 24px;
+        }
+        h1 {
+            color: #4b4b6b;
+            font-size: 2rem;
+            margin-bottom: 28px;
+        }
+        .game-btn {
+            background: #6c63ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            padding: 14px 0;
+            margin: 8px 8px 0 8px;
+            width: 90px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(108,99,255,0.08);
+        }
+        .game-btn:hover {
+            background: #5548c8;
+        }
+        .reset-btn {
+            background: #ff6584;
+            color: #fff;
+            margin-top: 18px;
+        }
+        .score-box {
+            background: #f3f3fd;
+            color: #4b4b6b;
+            border-radius: 8px;
+            margin: 24px 0 0 0;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 1px 4px rgba(108,99,255,0.04);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bat-Ball-Stump Game</h1>
+        <button class="game-btn" onclick="
+            var computerChoice = generateChoice();
+            var resultMsg = getResult('Bat', computerChoice);
+            showResult('Bat', computerChoice, resultMsg);
+        ">Bat</button>
+        <button class="game-btn" onclick="
+            var computerChoice = generateChoice();
+            var resultMsg = getResult('Ball', computerChoice);
+            showResult('Ball', computerChoice, resultMsg);
+        ">Ball</button>
+        <button class="game-btn" onclick="
+            var computerChoice = generateChoice();
+            var resultMsg = getResult('Stumps', computerChoice);
+            showResult('Stumps', computerChoice, resultMsg);
+        ">Stumps</button>
+        <button class="game-btn reset-btn" onclick="
+            localStorage.clear();
+            score.win = 0;
+            score.lost = 0;
+            score.tie = 0;
+            localStorage.setItem('Score', JSON.stringify(score));
+            document.getElementById('score-box').innerText = score.displayScore();
+            alert('Score has been reset!');
+        ">Reset</button>
+        <div class="score-box" id="score-box"></div>
+    </div>
+    <script>
+        let scoreStr = localStorage.getItem('Score');
+        let score;
+        if (scoreStr) {
+            score = JSON.parse(scoreStr);
+        } else {
+            score = {
+                win: 0,
+                lost: 0,
+                tie: 0,
+            };
+        }
+        score.displayScore = function() {
+            return `No Of Matches Won: ${score.win}  Lost: ${score.lost}  Tie: ${score.tie}`;
+        }
+        var randomNumber;
+        function generateChoice() {
+            randomNumber = Math.random() * 3;
+            if (randomNumber > 0 && randomNumber <= 1) {
+                return 'Bat';
+            } else if (randomNumber > 1 && randomNumber <= 2) {
+                return 'Ball';
+            } else {
+                return 'Stumps';
+            }
+        }
+
+        function getResult(userMove, computerMove) {
+            var resultMsg = '';
+            if (userMove === 'Bat') {
+                if (computerMove === 'Ball') {
+                    score.win++;
+                    resultMsg = 'User Won !';
+                } else if (computerMove === 'Bat') {
+                    score.tie++;
+                    resultMsg = "It's a tie !";
+                } else if (computerMove === 'Stumps') {
+                    score.lost++;
+                    resultMsg = 'Computer Won !';
+                }
+            } else if (userMove === 'Ball') {
+                if (computerMove === 'Ball') {
+                    score.tie++;
+                    resultMsg = "It's a Tie !";
+                } else if (computerMove === 'Bat') {
+                    score.lost++;
+                    resultMsg = 'Computer Won !';
+                } else if (computerMove === 'Stumps') {
+                    score.win++;
+                    resultMsg = 'User Won !';
+                }
+            } else {
+                if (computerMove === 'Ball') {
+                    score.lost++;
+                    resultMsg = 'Computer Won !';
+                } else if (computerMove === 'Bat') {
+                    score.win++;
+                    resultMsg = 'User Won !';
+                } else if (computerMove === 'Stumps') {
+                    score.tie++;
+                    resultMsg = "It's a Tie !";
+                }
+            }
+            document.getElementById('score-box').innerText = score.displayScore();
+            return resultMsg;
+        }
+
+        function showResult(userMove, computerMove, resultMsg) {
+            localStorage.setItem('Score', JSON.stringify(score));
+            alert(`You have chosen ${userMove}. Computer's choice is ${computerMove}\n\n${resultMsg}\n\n${score.displayScore()}`);
+        }
+        document.getElementById('score-box').innerText = score.displayScore();
+    </script>
+</body>
+</html>
