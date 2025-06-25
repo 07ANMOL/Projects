@@ -51,26 +51,51 @@
             font-weight: 500;
             box-shadow: 0 1px 4px rgba(108,99,255,0.04);
         }
+        .choice-btns {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+        .game-img-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px lavender;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.3s, filter 0.3s;
+        }
+        .game-img-btn:active {
+            transform: scale(0.95);
+        }
+        .game-img-btn:hover {
+            box-shadow: 0 0 24px 6px #da0ec6f0, 0 2px 8px #6c63ff22;
+            filter: brightness(1.15) drop-shadow(0 0 8px #6c63ff88);
+            transform: scale(1.08) rotate(-3deg);
+            outline: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Bat-Ball-Stump Game</h1>
-        <button class="game-btn" onclick="
-            var computerChoice = generateChoice();
-            var resultMsg = getResult('Bat', computerChoice);
-            showResult('Bat', computerChoice, resultMsg);
-        ">Bat</button>
-        <button class="game-btn" onclick="
-            var computerChoice = generateChoice();
-            var resultMsg = getResult('Ball', computerChoice);
-            showResult('Ball', computerChoice, resultMsg);
-        ">Ball</button>
-        <button class="game-btn" onclick="
-            var computerChoice = generateChoice();
-            var resultMsg = getResult('Stumps', computerChoice);
-            showResult('Stumps', computerChoice, resultMsg);
-        ">Stumps</button>
+        <div class="choice-btns">
+            <img src="images/bat.png" alt="Bat Image" class="game-img-btn" tabindex="0" onclick="
+                var computerChoice = generateChoice();
+                var resultMsg = getResult('Bat', computerChoice);
+                showResult('Bat', computerChoice, resultMsg);
+            ">
+            <img src="images/ball.png" alt="Ball Image" class="game-img-btn" tabindex="0" onclick="
+                var computerChoice = generateChoice();
+                var resultMsg = getResult('Ball', computerChoice);
+                showResult('Ball', computerChoice, resultMsg);
+            ">
+            <img src="images/stumps.png" alt="Stumps Image" class="game-img-btn" tabindex="0" onclick="
+                var computerChoice = generateChoice();
+                var resultMsg = getResult('Stumps', computerChoice);
+                showResult('Stumps', computerChoice, resultMsg);
+            ">
+        </div>
         <button class="game-btn reset-btn" onclick="
             localStorage.clear();
             score.win = 0;
@@ -81,6 +106,7 @@
             alert('Score has been reset!');
         ">Reset</button>
         <div class="score-box" id="score-box"></div>
+        <div id="output-box" style="margin-top:18px; color:#333; font-size:1.1rem;"></div>
     </div>
     <script>
         let scoreStr = localStorage.getItem('Score');
@@ -151,7 +177,10 @@
 
         function showResult(userMove, computerMove, resultMsg) {
             localStorage.setItem('Score', JSON.stringify(score));
-            alert(`You have chosen ${userMove}. Computer's choice is ${computerMove}\n\n${resultMsg}\n\n${score.displayScore()}`);
+            document.getElementById('output-box').innerHTML =
+                `<b>You have chosen:</b> ${userMove}<br>` +
+                `<b>Computer's choice:</b> ${computerMove}<br>` +
+                `<b>Result:</b> ${resultMsg}`;
         }
         document.getElementById('score-box').innerText = score.displayScore();
     </script>
